@@ -14,9 +14,36 @@ enum MenuScreen {
     SCREEN_OSCILLOSCOPE = 1
 };
 
+//Screen state identifiers
+enum ScreenState {
+    STATE_MENU = 0,      // Browsing menu items
+    STATE_SELECTED = 1   // Inside a selected menu item
+};
+
+//Propose mode sub-states
+enum ProposeState {
+    PROPOSE_WAITING = 0,    // Showing "Press to Accept"
+    PROPOSE_DISPLAYING = 1  // Showing "I Love You" with flashing heart
+};
+
 //Menu functions
 void init_menu();
 int get_current_screen();
 void set_current_screen(int screen);
 const char* get_menu_item(int index);
 const char* get_current_screen_name();
+
+//Screen state functions
+int get_screen_state();
+void set_screen_state(int state);
+void enter_selected_item();
+void exit_to_menu();
+bool is_in_menu();
+bool is_item_selected();
+
+//Propose mode functions
+int get_propose_state();
+void set_propose_state(int state);
+void handle_propose_button_press();
+bool should_return_to_menu();
+void reset_propose_timer();

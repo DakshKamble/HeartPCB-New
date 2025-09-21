@@ -20,6 +20,12 @@ void loop() {
     // Handle user input
     handle_button_input();
     
+    // Check if propose mode should return to menu automatically
+    if (is_item_selected() && get_current_screen() == 0 && should_return_to_menu()) {
+        exit_to_menu();
+        set_propose_state(0); // Reset to waiting state
+    }
+    
     // Get current selected item from button handler
     int selected_item = get_selected_item();
     

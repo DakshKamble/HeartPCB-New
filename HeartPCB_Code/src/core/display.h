@@ -12,3 +12,12 @@ void draw_oscilloscope_screen();
 void draw_battery_icon();
 void draw_status_icons();
 void set_display_invert(bool inverted);
+
+//Selection screen functions
+void draw_propose_selected_screen();
+void draw_oscilloscope_selected_screen();
+
+//Propose mode specific screens
+void draw_propose_waiting_screen();
+void draw_propose_love_screen();
+bool should_show_flashing_heart();

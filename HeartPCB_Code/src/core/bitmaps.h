@@ -8,3 +8,4 @@ extern const unsigned char BeaconIcon[];
 extern const unsigned char ArrowDown[];
 extern const unsigned char ArrowUp[];
 extern const unsigned char CrosshairsIcon[];
+extern const unsigned char FlashingHeartIcon[];

@@ -1,4 +1,5 @@
 #include "button_handler.h"
+#include "menu.h"
 
 //Button handler variables (private to this module)
 static int item_selected = 0;
@@ -47,11 +48,36 @@ void handle_button_input() {
         button_was_pressed = false;
         long_press_active = false;
         
-        // Short press - change menu item
+        // Handle button release based on press duration and current state
         if (press_duration < LONG_PRESS_TIME) {
-            item_selected = (item_selected + 1) % 2; // Cycle between 0 and 1
+            // Short press
+            if (is_in_menu()) {
+                // In menu: change menu item
+                item_selected = (item_selected + 1) % 2; // Cycle between 0 and 1
+            } else if (is_item_selected()) {
+                // In selection mode
+                if (get_current_screen() == SCREEN_PROPOSE) {
+                    // Handle propose mode button press
+                    handle_propose_button_press();
+                } else {
+                    // Other modes: exit back to menu
+                    exit_to_menu();
+                }
+            }
+        } else {
+            // Long press release
+            if (is_in_menu()) {
+                // In menu: enter selected item
+                set_current_screen(item_selected);
+                enter_selected_item();
+                // Reset propose state when entering propose mode
+                if (item_selected == SCREEN_PROPOSE) {
+                    set_propose_state(PROPOSE_WAITING);
+                }
+            }
+            // If already in selection, long press does nothing on release
         }
-        // Long press already handled during press, just reset
+        
         long_press_triggered = false;
     }
 }

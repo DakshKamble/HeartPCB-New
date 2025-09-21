@@ -39,10 +39,21 @@ void draw_status_icons() {
 
 //Draw main screen with menu selection
 void draw_main_screen(int selected_item) {
-    if (selected_item == 0) {
-        draw_propose_screen();
-    } else if (selected_item == 1) {
-        draw_oscilloscope_screen();
+    // Check if we're in menu browsing mode or selection mode
+    if (is_in_menu()) {
+        // Menu browsing mode
+        if (selected_item == 0) {
+            draw_propose_screen();
+        } else if (selected_item == 1) {
+            draw_oscilloscope_screen();
+        }
+    } else if (is_item_selected()) {
+        // Selection mode - show the selected item's content
+        if (get_current_screen() == 0) {
+            draw_propose_selected_screen();
+        } else if (get_current_screen() == 1) {
+            draw_oscilloscope_selected_screen();
+        }
     }
 }
 
@@ -114,4 +125,85 @@ void set_display_invert(bool inverted) {
         display_is_inverted = inverted;
         // The actual inversion drawing is handled in the screen drawing functions
     }
+}
+
+//Draw Propose selected screen (handles sub-states)
+void draw_propose_selected_screen() {
+    if (get_propose_state() == PROPOSE_WAITING) {
+        draw_propose_waiting_screen();
+    } else if (get_propose_state() == PROPOSE_DISPLAYING) {
+        draw_propose_love_screen();
+    }
+}
+
+//Draw Oscilloscope selected screen (placeholder)
+void draw_oscilloscope_selected_screen() {
+    clear_display();
+    
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 32); // Updated for 128x32 display
+        u8g2.setDrawColor(0);
+    } else {
+        u8g2.setDrawColor(1);
+    }
+    
+    // Draw "Entered Oscilloscope" message
+    u8g2.setFont(u8g2_font_t0_12_tr);
+    u8g2.drawStr(10, 15, "Entered Oscilloscope");
+    u8g2.drawStr(15, 28, "Press to exit");
+    
+    update_display();
+}
+
+//Draw "Press to Accept" screen
+void draw_propose_waiting_screen() {
+    clear_display();
+    
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 32); // Updated for 128x32 display
+        u8g2.setDrawColor(0);
+    } else {
+        u8g2.setDrawColor(1);
+    }
+    
+    // Draw "Press to Accept" message
+    u8g2.setFont(u8g2_font_t0_12_tr);
+    u8g2.drawStr(17, 20, "Press to Accept");
+    
+    update_display();
+}
+
+//Draw "I Love You" screen with flashing heart
+void draw_propose_love_screen() {
+    clear_display();
+    
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 32); // Updated for 128x32 display
+        u8g2.setDrawColor(0);
+    } else {
+        u8g2.setDrawColor(1);
+    }
+    
+    // Draw "I LOVE YOU" text
+    u8g2.setFont(u8g2_font_t0_15_tr);
+    u8g2.drawStr(8, 21, "I LOVE YOU");
+    
+    // Draw flashing heart (only show if flashing is on)
+    if (should_show_flashing_heart()) {
+        u8g2.drawXBM(98, 4, 28, 24, FlashingHeartIcon);
+    }
+    
+    update_display();
+}
+
+//Determine if heart should be visible (flashing effect)
+bool should_show_flashing_heart() {
+    // Flash every 500ms (on for 500ms, off for 500ms)
+    return (millis() % 1000) < 500;
 }
