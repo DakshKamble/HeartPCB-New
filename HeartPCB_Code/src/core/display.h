@@ -11,3 +11,4 @@ void draw_propose_screen();
 void draw_oscilloscope_screen();
 void draw_battery_icon();
 void draw_status_icons();
+void set_display_invert(bool inverted);

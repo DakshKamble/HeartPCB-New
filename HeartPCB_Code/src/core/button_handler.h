@@ -8,6 +8,7 @@
 void init_button_handler();
 void handle_button_input();
 bool is_button_pressed();
+bool is_long_press_active();
 
 //Button state getters
 int get_selected_item();

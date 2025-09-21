@@ -7,7 +7,7 @@
 #include "core/menu.h"
 
 // Display object - shared with display module
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);
+U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
 
 void setup() {
     // Initialize all modules
@@ -22,6 +22,9 @@ void loop() {
     
     // Get current selected item from button handler
     int selected_item = get_selected_item();
+    
+    // Handle display inversion for long press (check state first)
+    set_display_invert(is_long_press_active());
     
     // Draw the main screen with current selection
     draw_main_screen(selected_item);

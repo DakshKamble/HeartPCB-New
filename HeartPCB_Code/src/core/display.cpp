@@ -4,11 +4,15 @@
 //Display object (external, defined in main.cpp)
 extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
 
+//Display state tracking
+static bool display_is_inverted = false;
+
 //Initialize display
 void init_display() {
     u8g2.begin();
     u8g2.setFontMode(1);
     u8g2.setBitmapMode(1);
+    u8g2.setDrawColor(1); // Start with normal white drawing color
 }
 
 //Clear display buffer
@@ -46,6 +50,15 @@ void draw_main_screen(int selected_item) {
 void draw_propose_screen() {
     clear_display();
     
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 64); // Fill with white background
+        u8g2.setDrawColor(0); // Draw in black
+    } else {
+        u8g2.setDrawColor(1); // Normal white drawing
+    }
+    
     // Draw status icons
     draw_status_icons();
     
@@ -67,6 +80,15 @@ void draw_propose_screen() {
 void draw_oscilloscope_screen() {
     clear_display();
     
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 64); // Fill with white background
+        u8g2.setDrawColor(0); // Draw in black
+    } else {
+        u8g2.setDrawColor(1); // Normal white drawing
+    }
+    
     // Draw status icons (battery and beacon)
     draw_status_icons();
     
@@ -83,4 +105,13 @@ void draw_oscilloscope_screen() {
     u8g2.drawXBM(64, 2, 8, 4, ArrowUp);
     
     update_display();
+}
+
+//Set display inversion (for long press feedback)
+void set_display_invert(bool inverted) {
+    // Only change if state is different to prevent flickering
+    if (display_is_inverted != inverted) {
+        display_is_inverted = inverted;
+        // The actual inversion drawing is handled in the screen drawing functions
+    }
 }
