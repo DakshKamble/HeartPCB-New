@@ -16,8 +16,9 @@ enum MenuScreen {
 
 //Screen state identifiers
 enum ScreenState {
-    STATE_MENU = 0,      // Browsing menu items
-    STATE_SELECTED = 1   // Inside a selected menu item
+    STATE_SPLASH = 0,    // Showing splash screen
+    STATE_MENU = 1,      // Browsing menu items
+    STATE_SELECTED = 2   // Inside a selected menu item
 };
 
 //Propose mode sub-states
@@ -40,6 +41,9 @@ void enter_selected_item();
 void exit_to_menu();
 bool is_in_menu();
 bool is_item_selected();
+bool is_showing_splash();
+void exit_splash_to_menu();
+bool should_exit_splash();
 
 //Propose mode functions
 int get_propose_state();
@@ -47,3 +51,8 @@ void set_propose_state(int state);
 void handle_propose_button_press();
 bool should_return_to_menu();
 void reset_propose_timer();
+
+//Splash screen functions
+const char* get_splash_text();
+int get_splash_text_x();
+int get_splash_text_y();

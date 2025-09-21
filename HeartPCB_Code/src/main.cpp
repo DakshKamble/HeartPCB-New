@@ -17,8 +17,15 @@ void setup() {
 }
 
 void loop() {
-    // Handle user input
-    handle_button_input();
+    // Check if splash screen should exit automatically
+    if (is_showing_splash() && should_exit_splash()) {
+        exit_splash_to_menu();
+    }
+    
+    // Handle user input (only if not in splash mode)
+    if (!is_showing_splash()) {
+        handle_button_input();
+    }
     
     // Check if propose mode should return to menu automatically
     if (is_item_selected() && get_current_screen() == 0 && should_return_to_menu()) {

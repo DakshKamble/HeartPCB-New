@@ -21,3 +21,6 @@ void draw_oscilloscope_selected_screen();
 void draw_propose_waiting_screen();
 void draw_propose_love_screen();
 bool should_show_flashing_heart();
+
+//Splash screen functions
+void draw_splash_screen();

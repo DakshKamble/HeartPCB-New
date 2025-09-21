@@ -39,8 +39,11 @@ void draw_status_icons() {
 
 //Draw main screen with menu selection
 void draw_main_screen(int selected_item) {
-    // Check if we're in menu browsing mode or selection mode
-    if (is_in_menu()) {
+    // Check current screen state
+    if (is_showing_splash()) {
+        // Splash screen mode
+        draw_splash_screen();
+    } else if (is_in_menu()) {
         // Menu browsing mode
         if (selected_item == 0) {
             draw_propose_screen();
@@ -206,4 +209,24 @@ void draw_propose_love_screen() {
 bool should_show_flashing_heart() {
     // Flash every 500ms (on for 500ms, off for 500ms)
     return (millis() % 1000) < 500;
+}
+
+//Draw splash screen
+void draw_splash_screen() {
+    clear_display();
+    
+    // Handle background for inverted mode
+    if (display_is_inverted) {
+        u8g2.setDrawColor(1);
+        u8g2.drawBox(0, 0, 128, 32); // Updated for 128x32 display
+        u8g2.setDrawColor(0);
+    } else {
+        u8g2.setDrawColor(1);
+    }
+    
+    // Draw splash text with custom font
+    u8g2.setFont(u8g2_font_profont29_tr);
+    u8g2.drawStr(get_splash_text_x(), get_splash_text_y(), get_splash_text());
+    
+    update_display();
 }

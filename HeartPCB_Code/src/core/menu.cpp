@@ -2,10 +2,17 @@
 
 //Menu variables (private to this module)
 static int current_screen = 0;
-static int screen_state = STATE_MENU;
+static int screen_state = STATE_SPLASH; // Start with splash screen
 static int propose_state = PROPOSE_WAITING;
 static unsigned long propose_display_start = 0;
+static unsigned long splash_start_time = 0;
 static const unsigned long PROPOSE_DISPLAY_TIME = 10000; // 10 seconds
+static const unsigned long SPLASH_DISPLAY_TIME = 2000;   // 2 seconds
+
+//Splash screen configuration (easily changeable)
+static const char* SPLASH_TEXT = "Hi Daksh";
+static const int SPLASH_TEXT_X = 2;
+static const int SPLASH_TEXT_Y = 25;
 
 //Menu items
 char menu_items[MAX_ITEMS][MAX_ITEM_LENGTH] = {
@@ -16,9 +23,10 @@ char menu_items[MAX_ITEMS][MAX_ITEM_LENGTH] = {
 //Initialize menu system
 void init_menu() {
     current_screen = 0;
-    screen_state = STATE_MENU;
+    screen_state = STATE_SPLASH;
     propose_state = PROPOSE_WAITING;
     propose_display_start = 0;
+    splash_start_time = millis();
 }
 
 //Get current screen
@@ -71,6 +79,31 @@ bool is_in_menu() {
 
 bool is_item_selected() {
     return screen_state == STATE_SELECTED;
+}
+
+bool is_showing_splash() {
+    return screen_state == STATE_SPLASH;
+}
+
+void exit_splash_to_menu() {
+    screen_state = STATE_MENU;
+}
+
+bool should_exit_splash() {
+    return (millis() - splash_start_time) >= SPLASH_DISPLAY_TIME;
+}
+
+//Get splash screen configuration
+const char* get_splash_text() {
+    return SPLASH_TEXT;
+}
+
+int get_splash_text_x() {
+    return SPLASH_TEXT_X;
+}
+
+int get_splash_text_y() {
+    return SPLASH_TEXT_Y;
 }
 
 //Propose mode functions
