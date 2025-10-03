@@ -1,15 +1,20 @@
 #pragma once
 #include <Arduino.h>
+#include "config.h"
+#include "state_manager.h"
 
-//Button handler constants
-#define BUTTON_PIN D5
+// Button handler - processes physical button and generates events
+class ButtonHandler {
+public:
+    void init();
+    ButtonEvent update();
+    
+private:
+    
+    bool button_was_pressed = false;
+    unsigned long button_press_start = 0;
+    bool long_press_triggered = false;
+};
 
-//Button handler functions
-void init_button_handler();
-void handle_button_input();
-bool is_button_pressed();
-bool is_long_press_active();
-
-//Button state getters
-int get_selected_item();
-void reset_button_state();
+// Global button handler instance
+extern ButtonHandler g_button;
