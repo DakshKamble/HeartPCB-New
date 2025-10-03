@@ -5,9 +5,16 @@
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 32
 
+// Battery Monitor Configuration
+#define BATTERY_ADC_PIN 34
+#define BATTERY_CHARGING_PIN 23  // STAT pin from charging module (HIGH when charging)
+#define VOLTAGE_DIVIDER_FACTOR 1.274
+#define ADC_RESOLUTION 4095.0  // 12-bit ADC
+#define ADC_REFERENCE_VOLTAGE 3.3  // ESP32 reference voltage
+
 // LED Strip Configuration
 #define LED_PIN 2
-#define NUM_LEDS 30
+#define NUM_LEDS 21
 #define LED_BRIGHTNESS 128
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
@@ -26,11 +33,12 @@
 #define SPLASH_TEXT_Y 25
 
 // Menu Configuration
-#define MENU_ITEM_COUNT 4
+#define MENU_ITEM_COUNT 5
 #define MENU_ITEM_PROPOSE "Propose"
 #define MENU_ITEM_OSCILLOSCOPE "Oscilloscope"
 #define MENU_ITEM_OTA "OTA Update"
 #define MENU_ITEM_ANIMATIONS "Animations"
+#define MENU_ITEM_BATTERY "Battery"
 
 // Propose Screen Configuration
 #define PROPOSE_WAITING_TEXT "Press to Accept"
@@ -47,3 +55,7 @@
 // Animations Screen Configuration
 #define ANIMATIONS_TITLE "Animations Mode"
 #define ANIMATIONS_EXIT_TEXT "Press to exit"
+
+// Battery Screen Configuration
+#define BATTERY_TITLE "Battery Info"
+#define BATTERY_EXIT_TEXT "Press to exit"

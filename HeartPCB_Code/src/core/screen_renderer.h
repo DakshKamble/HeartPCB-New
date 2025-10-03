@@ -26,6 +26,7 @@ private:
     void draw_oscilloscope();
     void draw_ota_update();
     void draw_animations();
+    void draw_battery();
 };
 
 // Global renderer instance

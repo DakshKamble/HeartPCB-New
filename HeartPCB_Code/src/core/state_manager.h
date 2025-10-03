@@ -10,7 +10,8 @@ enum AppState {
     STATE_PROPOSE_DISPLAYING,
     STATE_OSCILLOSCOPE,
     STATE_OTA_UPDATE,
-    STATE_ANIMATIONS
+    STATE_ANIMATIONS,
+    STATE_BATTERY
 };
 
 // Button events
@@ -36,6 +37,7 @@ public:
     bool is_oscilloscope() const { return current_state == STATE_OSCILLOSCOPE; }
     bool is_ota_update() const { return current_state == STATE_OTA_UPDATE; }
     bool is_animations() const { return current_state == STATE_ANIMATIONS; }
+    bool is_battery() const { return current_state == STATE_BATTERY; }
     
     // Menu selection
     int get_menu_selection() const { return menu_selection; }

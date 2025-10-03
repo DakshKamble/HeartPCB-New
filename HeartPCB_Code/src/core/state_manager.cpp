@@ -65,6 +65,8 @@ void StateManager::handle_button_event(ButtonEvent event) {
                 transition_to(STATE_MENU);
             } else if (current_state == STATE_ANIMATIONS) {
                 cycle_animation_selection();
+            } else if (current_state == STATE_BATTERY) {
+                transition_to(STATE_MENU);
             }
             break;
             
@@ -80,10 +82,11 @@ void StateManager::handle_button_event(ButtonEvent event) {
                     transition_to(STATE_OTA_UPDATE);
                 } else if (menu_selection == 3) {
                     transition_to(STATE_ANIMATIONS);
+                } else if (menu_selection == 4) {
+                    transition_to(STATE_BATTERY);
                 }
             } else if (current_state == STATE_ANIMATIONS) {
-                // Long press in animations exits to menu
-                g_leds.set_animation(ANIM_OFF);
+                // Long press in animations exits to menu (keep animation running)
                 transition_to(STATE_MENU);
             }
             break;
