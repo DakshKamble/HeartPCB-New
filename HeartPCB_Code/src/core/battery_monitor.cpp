@@ -9,7 +9,8 @@ void BatteryMonitor::init() {
     // Configure charging detection pin
     pinMode(BATTERY_CHARGING_PIN, INPUT_PULLUP);  // Pull up, pin will be LOW when charging
     
-    // The XIAO RA4M1 uses a 12-bit ADC by default, so no special configuration is needed.
+    // Configure ADC for 14-bit resolution
+    analogReadResolution(14);  // Set to 14-bit resolution (0-16383)
     
     // Initial reading
     update();
@@ -95,7 +96,14 @@ void BatteryMonitor::print_status() const {
     Serial.println("========== BATTERY STATUS ==========");
     Serial.print("Raw ADC Value: ");
     Serial.println(raw_adc_value);
-    Serial.print("Battery Voltage: ");
+    
+    // Calculate ADC voltage (before divider correction)
+    float adc_voltage = (raw_adc_value / ADC_RESOLUTION) * ADC_REFERENCE_VOLTAGE;
+    Serial.print("ADC Voltage (before divider): ");
+    Serial.print(adc_voltage, 3);
+    Serial.println(" V");
+    
+    Serial.print("Battery Voltage (after divider): ");
     Serial.print(battery_voltage, 2);
     Serial.println(" V");
     Serial.print("Battery Percentage: ");

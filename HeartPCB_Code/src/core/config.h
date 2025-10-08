@@ -8,9 +8,10 @@
 // Battery Monitor Configuration
 #define BATTERY_ADC_PIN A0
 #define BATTERY_CHARGING_PIN D2  // STAT pin from charging module (HIGH when charging)
-#define VOLTAGE_DIVIDER_FACTOR 1.274
-#define ADC_RESOLUTION 4095.0  // 12-bit ADC
+#define VOLTAGE_DIVIDER_FACTOR 1.27447
+#define ADC_RESOLUTION 16383.0  // 14-bit ADC (2^14 - 1)
 #define ADC_REFERENCE_VOLTAGE 3.3 // XIAO RA4M1 reference voltage
+#define BATTERY_LED_BRIGHTNESS 77 // Built-in LED brightness (0-255, 30% = 77)
 
 // LED Strip Configuration
 #define LED_PIN D3

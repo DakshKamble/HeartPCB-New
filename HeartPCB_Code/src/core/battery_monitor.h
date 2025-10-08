@@ -28,9 +28,9 @@ private:
     unsigned long last_update = 0;
     static const unsigned long UPDATE_INTERVAL = 1000;  // Update every 1 second
     
-    // Battery voltage thresholds (adjust for your battery type)
+    // Battery voltage thresholds (adjusted so 78% becomes 100%)
     static constexpr float BATTERY_MIN_VOLTAGE = 3.0;   // 0%
-    static constexpr float BATTERY_MAX_VOLTAGE = 4.2;   // 100%
+    static constexpr float BATTERY_MAX_VOLTAGE = 3.936; // 100% (was 78% at 4.2V scale)
     static constexpr float BATTERY_CRITICAL = 3.3;      // Critical level
     
     // Helper functions

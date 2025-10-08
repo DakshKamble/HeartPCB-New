@@ -8,6 +8,7 @@
 #include "core/screen_renderer.h"
 #include "core/led_controller.h"
 #include "core/battery_monitor.h"
+#include "core/battery_led.h"
 
 // Display object
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
@@ -23,6 +24,7 @@ void setup() {
     g_renderer.init(&u8g2);
     g_leds.init();
     g_battery.init();
+    g_battery_led.init();
     
     Serial.println("All systems initialized!");
     Serial.println("======================================\n");
@@ -43,6 +45,13 @@ void loop() {
     
     // Update battery monitor
     g_battery.update();
+    
+    // Update battery LED - only show when charging
+    if (g_battery.is_charging()) {
+        g_battery_led.set_charging_animation(g_battery.get_percentage());
+    } else {
+        g_battery_led.turn_off();
+    }
     
     // Print battery status when in Battery screen
     static bool was_in_battery = false;
