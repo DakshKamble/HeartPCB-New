@@ -1,23 +1,21 @@
 #pragma once
 
 // Hardware Configuration
-#define BUTTON_PIN 5
+#define BUTTON_PIN D1
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 32
 
 // Battery Monitor Configuration
-#define BATTERY_ADC_PIN 34
-#define BATTERY_CHARGING_PIN 23  // STAT pin from charging module (HIGH when charging)
+#define BATTERY_ADC_PIN A0
+#define BATTERY_CHARGING_PIN D2  // STAT pin from charging module (HIGH when charging)
 #define VOLTAGE_DIVIDER_FACTOR 1.274
 #define ADC_RESOLUTION 4095.0  // 12-bit ADC
-#define ADC_REFERENCE_VOLTAGE 3.3  // ESP32 reference voltage
+#define ADC_REFERENCE_VOLTAGE 3.3 // XIAO RA4M1 reference voltage
 
 // LED Strip Configuration
-#define LED_PIN 2
+#define LED_PIN D3
 #define NUM_LEDS 21
-#define LED_BRIGHTNESS 128
-#define LED_TYPE WS2812B
-#define COLOR_ORDER GRB
+#define LED_BRIGHTNESS 64
 
 // Timing Configuration
 #define SPLASH_DURATION_MS 2000
@@ -28,7 +26,7 @@
 #define MAIN_LOOP_DELAY_MS 10
 
 // Display Configuration
-#define SPLASH_TEXT "Hi Daksh"
+#define SPLASH_TEXT "Hi Gargi"
 #define SPLASH_TEXT_X 2
 #define SPLASH_TEXT_Y 25
 

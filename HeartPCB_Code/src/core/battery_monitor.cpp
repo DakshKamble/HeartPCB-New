@@ -5,20 +5,16 @@ BatteryMonitor g_battery;
 
 void BatteryMonitor::init() {
     // Configure ADC pin
-    pinMode(BATTERY_ADC_PIN, INPUT);
     
     // Configure charging detection pin
-    pinMode(BATTERY_CHARGING_PIN, INPUT_PULLDOWN);  // Pull down, HIGH when charging
+    pinMode(BATTERY_CHARGING_PIN, INPUT_PULLUP);  // Pull up, pin will be LOW when charging
     
-    // ESP32 ADC configuration
-    analogReadResolution(12);  // 12-bit resolution (0-4095)
-    analogSetAttenuation(ADC_11db);  // Full range: 0-3.3V
+    // The XIAO RA4M1 uses a 12-bit ADC by default, so no special configuration is needed.
     
     // Initial reading
     update();
     
-    Serial.println("Battery Monitor Initialized");
-    Serial.print("ADC Pin: ");
+    Serial.println("Battery Monitor initialized");
     Serial.println(BATTERY_ADC_PIN);
     Serial.print("Charging Pin: ");
     Serial.println(BATTERY_CHARGING_PIN);
@@ -77,8 +73,8 @@ int BatteryMonitor::calculate_percentage(float voltage) {
 }
 
 bool BatteryMonitor::is_charging() const {
-    // Read charging pin (HIGH when charging)
-    return digitalRead(BATTERY_CHARGING_PIN) == HIGH;
+    // Read charging pin (LOW when charging)
+    return digitalRead(BATTERY_CHARGING_PIN) == LOW;
 }
 
 const char* BatteryMonitor::get_status_text() const {

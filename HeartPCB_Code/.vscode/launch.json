@@ -12,10 +12,11 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/esp32dev/firmware.elf",
-            "projectEnvName": "esp32dev",
-            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-xtensa-esp32/bin",
+            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/seeed_xiao_ra4m1/firmware.elf",
+            "projectEnvName": "seeed_xiao_ra4m1",
+            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/Users/dakshkamble/.platformio/platforms/Seeed Studio/misc/svd/R7FA4M1AB.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
                 "task": "Pre-Debug"
@@ -25,19 +26,21 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/esp32dev/firmware.elf",
-            "projectEnvName": "esp32dev",
-            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-xtensa-esp32/bin",
-            "internalConsoleOptions": "openOnSessionStart"
+            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/seeed_xiao_ra4m1/firmware.elf",
+            "projectEnvName": "seeed_xiao_ra4m1",
+            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-gccarmnoneeabi/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/Users/dakshkamble/.platformio/platforms/Seeed Studio/misc/svd/R7FA4M1AB.svd"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/esp32dev/firmware.elf",
-            "projectEnvName": "esp32dev",
-            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-xtensa-esp32/bin",
+            "executable": "/Users/dakshkamble/Documents/REPOS/heartPCB/HeartPCB_Code/.pio/build/seeed_xiao_ra4m1/firmware.elf",
+            "projectEnvName": "seeed_xiao_ra4m1",
+            "toolchainBinDir": "/Users/dakshkamble/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/Users/dakshkamble/.platformio/platforms/Seeed Studio/misc/svd/R7FA4M1AB.svd",
             "loadMode": "manual"
         }
     ]

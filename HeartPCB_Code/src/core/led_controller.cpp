@@ -28,91 +28,48 @@ static const char* animation_names[] = {
     "Dreamy"
 };
 
+LedController::LedController() : strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800) {}
+
 void LedController::init() {
-    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-    FastLED.setBrightness(LED_BRIGHTNESS);
+    strip.begin();
+    strip.setBrightness(LED_BRIGHTNESS);
     clear();
 }
 
 void LedController::update() {
     unsigned long now = millis();
     
-    // Update at ~60 FPS
-    if (now - last_update < 16) {
+    if (now - last_update < 16) { // ~60 FPS
         return;
     }
     last_update = now;
     
-    // Run current animation
     switch (current_animation) {
-        case ANIM_OFF:
-            anim_off();
-            break;
-        case ANIM_SOLID_RED:
-            anim_solid(CRGB::Red);
-            break;
-        case ANIM_SOLID_GREEN:
-            anim_solid(CRGB::Green);
-            break;
-        case ANIM_SOLID_BLUE:
-            anim_solid(CRGB::Blue);
-            break;
-        case ANIM_RAINBOW:
-            anim_rainbow();
-            break;
-        case ANIM_BREATHING:
-            anim_breathing();
-            break;
-        case ANIM_SPARKLE:
-            anim_sparkle();
-            break;
-        case ANIM_FIRE:
-            anim_fire();
-            break;
-        case ANIM_HEARTBEAT:
-            anim_heartbeat();
-            break;
-        case ANIM_SOFT_PINK_FADE:
-            anim_soft_pink_fade();
-            break;
-        case ANIM_LOVE_WAVE:
-            anim_love_wave();
-            break;
-        case ANIM_PINK_STARS:
-            anim_pink_stars();
-            break;
-        case ANIM_ROMANTIC_CHASE:
-            anim_romantic_chase();
-            break;
-        case ANIM_ROSE_BLOOM:
-            anim_rose_bloom();
-            break;
-        case ANIM_CANDLELIGHT:
-            anim_candlelight();
-            break;
-        case ANIM_SUNSET_FADE:
-            anim_sunset_fade();
-            break;
-        case ANIM_LOVE_PULSE:
-            anim_love_pulse();
-            break;
-        case ANIM_SOFT_RAINBOW:
-            anim_soft_rainbow();
-            break;
-        case ANIM_PINK_COMET:
-            anim_pink_comet();
-            break;
-        case ANIM_VALENTINE:
-            anim_valentine();
-            break;
-        case ANIM_DREAMY_FADE:
-            anim_dreamy_fade();
-            break;
-        default:
-            break;
+        case ANIM_OFF:          anim_off(); break;
+        case ANIM_SOLID_RED:    anim_solid(strip.Color(255, 0, 0)); break;
+        case ANIM_SOLID_GREEN:  anim_solid(strip.Color(0, 255, 0)); break;
+        case ANIM_SOLID_BLUE:   anim_solid(strip.Color(0, 0, 255)); break;
+        case ANIM_RAINBOW:      anim_rainbow(); break;
+        case ANIM_BREATHING:    anim_breathing(); break;
+        case ANIM_SPARKLE:      anim_sparkle(); break;
+        case ANIM_FIRE:         anim_fire(); break;
+        case ANIM_HEARTBEAT:    anim_heartbeat(); break;
+        case ANIM_SOFT_PINK_FADE: anim_soft_pink_fade(); break;
+        case ANIM_LOVE_WAVE:    anim_love_wave(); break;
+        case ANIM_PINK_STARS:   anim_pink_stars(); break;
+        case ANIM_ROMANTIC_CHASE: anim_romantic_chase(); break;
+        case ANIM_ROSE_BLOOM:   anim_rose_bloom(); break;
+        case ANIM_CANDLELIGHT:  anim_candlelight(); break;
+        case ANIM_SUNSET_FADE:  anim_sunset_fade(); break;
+        case ANIM_LOVE_PULSE:   anim_love_pulse(); break;
+        case ANIM_SOFT_RAINBOW: anim_soft_rainbow(); break;
+        case ANIM_PINK_COMET:   anim_pink_comet(); break;
+        case ANIM_VALENTINE:    anim_valentine(); break;
+        case ANIM_DREAMY_FADE:  anim_dreamy_fade(); break;
+        default: break;
     }
     
-    FastLED.show();
+    strip.show();
 }
 
 void LedController::set_animation(LedAnimation anim) {
@@ -129,364 +86,295 @@ const char* LedController::get_animation_name() const {
     return "Unknown";
 }
 
-void LedController::set_all(CRGB color) {
-    fill_solid(leds, NUM_LEDS, color);
-    FastLED.show();
+void LedController::set_all(uint32_t color) {
+    strip.fill(color);
+    strip.show();
 }
 
 void LedController::clear() {
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-    FastLED.show();
+    strip.clear();
+    strip.show();
 }
 
 void LedController::set_brightness(uint8_t brightness) {
-    FastLED.setBrightness(brightness);
+    strip.setBrightness(brightness);
+    strip.show();
+}
+
+// HSV to RGB conversion
+uint32_t LedController::color_hsv(long hue, uint8_t sat, uint8_t val) {
+    uint8_t r, g, b;
+    hue %= 360; // h is now in [0, 359]
+    long h = hue / 60;
+    long f = (hue % 60) * 255 / 60;
+    uint8_t p = (val * (255 - sat)) / 255;
+    uint8_t q = (val * (255 - (sat * f) / 255)) / 255;
+    uint8_t t = (val * (255 - (sat * (255 - f)) / 255)) / 255;
+
+    switch (h) {
+        case 0: r = val; g = t; b = p; break;
+        case 1: r = q; g = val; b = p; break;
+        case 2: r = p; g = val; b = t; break;
+        case 3: r = p; g = q; b = val; break;
+        case 4: r = t; g = p; b = val; break;
+        default: r = val; g = p; b = q; break;
+    }
+    return strip.Color(r, g, b);
 }
 
 // Animation implementations
 
 void LedController::anim_off() {
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
+    strip.fill(0);
 }
 
-void LedController::anim_solid(CRGB color) {
-    fill_solid(leds, NUM_LEDS, color);
+void LedController::anim_solid(uint32_t color) {
+    strip.fill(color);
 }
 
 void LedController::anim_rainbow() {
-    fill_rainbow(leds, NUM_LEDS, animation_step, 7);
-    animation_step += 2;
+    for (int i = 0; i < NUM_LEDS; i++) {
+        int hue = ((animation_step * 2) + (i * 360 / NUM_LEDS)) % 360;
+        strip.setPixelColor(i, color_hsv(hue, 255, 255));
+    }
+    animation_step++;
 }
 
 void LedController::anim_breathing() {
-    // Sine wave breathing effect
     uint8_t brightness = (exp(sin(animation_step / 25.0 * PI)) - 0.36787944) * 108.0;
-    fill_solid(leds, NUM_LEDS, CHSV(160, 255, brightness));  // Blue breathing
+    uint32_t color = color_hsv(240, 255, brightness); // Blue hue = 240 in 360 scale
+    strip.fill(color);
     animation_step++;
 }
 
 void LedController::anim_sparkle() {
     // Fade all LEDs slightly
-    fadeToBlackBy(leds, NUM_LEDS, 20);
-    
+    for (int i = 0; i < NUM_LEDS; i++) {
+        uint32_t color = strip.getPixelColor(i);
+        uint8_t r = (color >> 16) & 0xFF;
+        uint8_t g = (color >> 8) & 0xFF;
+        uint8_t b = color & 0xFF;
+        strip.setPixelColor(i, strip.Color(r * 0.9, g * 0.9, b * 0.9));
+    }
+
     // Add random sparkles
-    if (random8() < 80) {
-        int pos = random16(NUM_LEDS);
-        leds[pos] = CHSV(random8(), 200, 255);
+    if (random(100) < 20) { // Adjusted probability
+        int pos = random(NUM_LEDS);
+        strip.setPixelColor(pos, color_hsv(random(360), 200, 255));
     }
 }
 
 void LedController::anim_fire() {
-    // Simple fire effect
     static byte heat[NUM_LEDS];
     
-    // Cool down every cell a little
+    // Cool down
     for (int i = 0; i < NUM_LEDS; i++) {
-        heat[i] = qsub8(heat[i], random8(0, ((55 * 10) / NUM_LEDS) + 2));
+        heat[i] = max(0, heat[i] - random(0, ((55 * 10) / NUM_LEDS) + 2));
     }
     
-    // Heat from each cell drifts up
+    // Heat drifts up
     for (int k = NUM_LEDS - 1; k >= 2; k--) {
         heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2]) / 3;
     }
     
-    // Randomly ignite new sparks
-    if (random8() < 120) {
-        int y = random8(7);
-        heat[y] = qadd8(heat[y], random8(160, 255));
+    // Ignite new sparks
+    if (random(100) < 60) {
+        int y = random(7);
+        heat[y] = min(255, heat[y] + random(160, 255));
     }
     
-    // Convert heat to LED colors
+    // Convert heat to color
     for (int j = 0; j < NUM_LEDS; j++) {
-        CRGB color = HeatColor(heat[j]);
-        leds[j] = color;
+        uint8_t hue = map(heat[j], 0, 255, 0, 60); // Red to Yellow
+        uint8_t sat = 255;
+        uint8_t val = heat[j];
+        strip.setPixelColor(j, color_hsv(hue, sat, val));
     }
 }
 
 void LedController::anim_heartbeat() {
-    // Heart-aware heartbeat effect - pulses from top to bottom
-    // Double pulse like a real heartbeat
-    
-    // Heartbeat pattern: beat-beat-pause (lub-dub pattern)
-    int cycle = animation_step % 120;  // Slower cycle for romantic feel
+    int cycle = animation_step % 120;
     uint8_t base_brightness = 0;
     
     if (cycle < 15) {
-        // First beat (lub)
-        base_brightness = sin8(cycle * 17);
-    } else if (cycle < 30) {
-        // Pause between beats
-        base_brightness = 0;
-    } else if (cycle < 45) {
-        // Second beat (dub)
-        base_brightness = sin8((cycle - 30) * 17);
-    } else {
-        // Long pause
-        base_brightness = 0;
+        base_brightness = sin(cycle * (PI / 15.0)) * 255;
+    } else if (cycle >= 30 && cycle < 45) {
+        base_brightness = sin((cycle - 30) * (PI / 15.0)) * 255;
     }
+
+    strip.clear();
     
-    // Clear all LEDs first
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-    
-    // Heart-shaped pulse - stronger at top, weaker toward bottom
     for (int i = 0; i < NUM_LEDS; i++) {
         int distance = get_heart_distance_from_top(i);
         uint8_t brightness = map(distance, 0, 10, base_brightness, base_brightness / 3);
-        leds[i] = CHSV(0, 200, brightness);  // Red with slight desaturation
+        strip.setPixelColor(i, color_hsv(0, 200, brightness)); // Red
     }
     
     animation_step++;
 }
 
 void LedController::anim_soft_pink_fade() {
-    // Gentle pink fade in and out
-    // Very slow, calming effect
-    
-    // Slow sine wave for smooth fading
-    float phase = animation_step / 80.0;  // Very slow
-    uint8_t brightness = (sin(phase) + 1.0) * 127.5;  // 0-255 range
-    
-    // Soft pink color (HSV: hue 234 = pink in 8-bit range)
-    CRGB color = CHSV(234, 180, brightness);
-    fill_solid(leds, NUM_LEDS, color);
-    
+    float phase = animation_step / 80.0;
+    uint8_t brightness = (sin(phase) + 1.0) * 127.5;
+    uint32_t color = color_hsv(330, 180, brightness); // Pink hue ~330
+    strip.fill(color);
     animation_step++;
 }
 
 void LedController::anim_love_wave() {
-    // Gentle wave of pink and red colors flowing across the strip
-    // Slow, romantic movement
-    
     for (int i = 0; i < NUM_LEDS; i++) {
-        // Create a slow-moving wave
-        uint8_t hue = ((animation_step / 2) + (i * 256 / NUM_LEDS)) % 256;
-        
-        // Map to pink/red range (hue 0-20 and 230-255)
-        // Convert full spectrum position to pink/red range
-        if (hue < 128) {
-            hue = map(hue, 0, 127, 0, 15);  // Red to pink
+        uint16_t hue = ((animation_step * 2) + (i * 360 / NUM_LEDS)) % 360;
+        if (hue < 180) {
+            hue = map(hue, 0, 179, 0, 30); // Red to pink
         } else {
-            hue = map(hue, 128, 255, 240, 255);  // Pink to red
+            hue = map(hue, 180, 359, 330, 360); // Pink to red
         }
-        
-        // Soft, gentle brightness variation
-        uint8_t brightness = 150 + sin8(animation_step + i * 10) / 3;
-        
-        leds[i] = CHSV(hue, 200, brightness);
+        uint8_t brightness = 150 + sin(animation_step / 10.0 + i / 5.0) * 50;
+        strip.setPixelColor(i, color_hsv(hue, 200, brightness));
     }
-    
     animation_step++;
 }
 
 void LedController::anim_pink_stars() {
-    // Twinkling pink and red stars - your requested effect!
-    // Dense, fast twinkling between pink and red
-    
-    // Fade all LEDs slightly (slower fade = more dense)
-    fadeToBlackBy(leds, NUM_LEDS, 3);
-    
-    // Randomly twinkle many LEDs (higher probability = more dense)
-    if (random8() < 200) {  // Increased from 100 to 200 for more density
-        int pos = random16(NUM_LEDS);
-        // Random hue between red (0) and pink (234-250)
-        uint8_t hue = random8(2) ? random8(0, 10) : random8(234, 250);
-        uint8_t brightness = random8(180, 255);  // Brighter minimum
-        leds[pos] = CHSV(hue, 200, brightness);
+    for (int i = 0; i < NUM_LEDS; i++) {
+        uint32_t color = strip.getPixelColor(i);
+        uint8_t r = (color >> 16) & 0xFF;
+        uint8_t g = (color >> 8) & 0xFF;
+        uint8_t b = color & 0xFF;
+        strip.setPixelColor(i, strip.Color(r * 0.95, g * 0.95, b * 0.95));
     }
-    
-    // Add second twinkle for even more density
-    if (random8() < 150) {
-        int pos = random16(NUM_LEDS);
-        uint8_t hue = random8(2) ? random8(0, 10) : random8(234, 250);
-        uint8_t brightness = random8(180, 255);
-        leds[pos] = CHSV(hue, 200, brightness);
+
+    if (random(100) < 50) { 
+        int pos = random(NUM_LEDS);
+        uint16_t hue = random(2) ? random(0, 10) : random(330, 350);
+        uint8_t brightness = random(180, 255);
+        strip.setPixelColor(pos, color_hsv(hue, 200, brightness));
     }
 }
 
 void LedController::anim_romantic_chase() {
-    // Heart-aware chasing pink lights - flows around heart shape
+    for (int i = 0; i < NUM_LEDS; i++) {
+        uint32_t color = strip.getPixelColor(i);
+        uint8_t r = (color >> 16) & 0xFF;
+        uint8_t g = (color >> 8) & 0xFF;
+        uint8_t b = color & 0xFF;
+        strip.setPixelColor(i, strip.Color(r * 0.85, g * 0.85, b * 0.85));
+    }
     
-    fadeToBlackBy(leds, NUM_LEDS, 25);
-    
-    // Chase around the heart perimeter: 1→2→...→11→...→20→21→1
-    int pos = (animation_step / 3) % NUM_LEDS;  // Slower chase
-    leds[pos] = CHSV(234, 200, 255);  // Pink
-    
-    // Add trailing glow following heart shape
-    int trail1 = (pos - 1 + NUM_LEDS) % NUM_LEDS;
-    int trail2 = (pos - 2 + NUM_LEDS) % NUM_LEDS;
-    int trail3 = (pos - 3 + NUM_LEDS) % NUM_LEDS;
-    
-    leds[trail1] = CHSV(234, 200, 180);
-    leds[trail2] = CHSV(234, 200, 120);
-    leds[trail3] = CHSV(234, 200, 60);
-    
+    int pos = (animation_step / 3) % NUM_LEDS;
+    strip.setPixelColor(pos, color_hsv(330, 200, 255)); // Pink
     animation_step++;
 }
 
 void LedController::anim_rose_bloom() {
-    // Heart-aware expanding pink glow from top to bottom
-    
-    // Clear all LEDs first
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-    
-    // Expand from top of heart (LEDs 1&21) to bottom (LED 11)
-    int max_distance = (animation_step / 6) % 12;  // Slower expansion
+    strip.clear();
+    int max_distance = (animation_step / 6) % 12;
     
     for (int dist = 0; dist <= max_distance && dist <= 10; dist++) {
         uint8_t brightness = map(dist, 0, max_distance, 255, 80);
-        CRGB color = CHSV(234, 200, brightness);
+        uint32_t color = color_hsv(330, 200, brightness);
         set_heart_symmetric_leds(dist, color);
     }
-    
     animation_step++;
 }
 
 void LedController::anim_candlelight() {
-    // Flickering warm candlelight effect
-    
     for (int i = 0; i < NUM_LEDS; i++) {
-        // Random flicker
-        uint8_t flicker = random8(200, 255);
-        // Warm orange/yellow color
-        leds[i] = CHSV(25, 200, flicker);
+        uint8_t flicker = random(200, 255);
+        strip.setPixelColor(i, color_hsv(30, 200, flicker)); // Orange/Yellow
     }
 }
 
 void LedController::anim_sunset_fade() {
-    // Slow transition from orange to pink like a sunset
-    
-    // Cycle through sunset colors
-    uint8_t hue = map(animation_step % 200, 0, 199, 10, 240);  // Orange to pink
-    uint8_t brightness = 200;
-    
-    fill_solid(leds, NUM_LEDS, CHSV(hue, 200, brightness));
-    
+    uint16_t hue = map(animation_step % 200, 0, 199, 10, 330); // Orange to pink
+    strip.fill(color_hsv(hue, 200, 200));
     animation_step++;
 }
 
 void LedController::anim_love_pulse() {
-    // Alternating red and pink pulses
-    
     int cycle = animation_step % 100;
-    uint8_t brightness = sin8(cycle * 2.55);
-    
-    // Alternate between red and pink
-    uint8_t hue = (animation_step / 100) % 2 ? 0 : 234;
-    
-    fill_solid(leds, NUM_LEDS, CHSV(hue, 200, brightness));
-    
+    uint8_t brightness = sin(cycle * (PI / 50.0)) * 255;
+    uint16_t hue = (animation_step / 100) % 2 ? 0 : 330; // Red or Pink
+    strip.fill(color_hsv(hue, 200, brightness));
     animation_step++;
 }
 
 void LedController::anim_soft_rainbow() {
-    // Pastel rainbow with reduced saturation
-    
-    fill_rainbow(leds, NUM_LEDS, animation_step, 7);
-    
-    // Reduce saturation for pastel effect
     for (int i = 0; i < NUM_LEDS; i++) {
-        CHSV hsv = rgb2hsv_approximate(leds[i]);
-        hsv.s = 150;  // Lower saturation for pastel
-        leds[i] = hsv;
+        int hue = ((animation_step * 2) + (i * 360 / NUM_LEDS)) % 360;
+        strip.setPixelColor(i, color_hsv(hue, 150, 255)); // Lower saturation
     }
-    
-    animation_step += 2;
+    animation_step++;
 }
 
 void LedController::anim_pink_comet() {
-    // Pink shooting star/comet effect
-    
-    fadeToBlackBy(leds, NUM_LEDS, 30);
-    
-    int pos = (animation_step / 2) % NUM_LEDS;
-    
-    // Bright head
-    leds[pos] = CHSV(234, 200, 255);
-    
-    // Trailing tail
-    for (int i = 1; i < 8; i++) {
-        int tail_pos = pos - i;
-        if (tail_pos >= 0) {
-            uint8_t brightness = 255 - (i * 30);
-            leds[tail_pos] = CHSV(234, 200, brightness);
-        }
+    for (int i = 0; i < NUM_LEDS; i++) {
+        uint32_t color = strip.getPixelColor(i);
+        uint8_t r = (color >> 16) & 0xFF;
+        uint8_t g = (color >> 8) & 0xFF;
+        uint8_t b = color & 0xFF;
+        strip.setPixelColor(i, strip.Color(r * 0.8, g * 0.8, b * 0.8));
     }
-    
+
+    int pos = (animation_step / 2) % NUM_LEDS;
+    strip.setPixelColor(pos, color_hsv(330, 200, 255));
     animation_step++;
 }
 
 void LedController::anim_valentine() {
-    // Alternating red and pink LEDs
-    
     for (int i = 0; i < NUM_LEDS; i++) {
-        // Alternate pattern with slow shift
         bool is_red = ((i + (animation_step / 20)) % 2) == 0;
-        uint8_t hue = is_red ? 0 : 234;
-        uint8_t brightness = 200;
-        
-        leds[i] = CHSV(hue, 200, brightness);
+        uint16_t hue = is_red ? 0 : 330;
+        strip.setPixelColor(i, color_hsv(hue, 200, 200));
     }
-    
     animation_step++;
 }
 
 void LedController::anim_dreamy_fade() {
-    // Soft multi-color fade through romantic colors
-    
-    // Cycle through romantic color palette
-    uint8_t colors[] = {0, 10, 234, 245, 160, 200};  // Red, orange, pink, magenta, blue, purple
+    uint16_t colors[] = {0, 30, 330, 300, 240, 270}; // Red, orange, pink, magenta, blue, purple
     int num_colors = 6;
     
     int color_index = (animation_step / 100) % num_colors;
     int next_index = (color_index + 1) % num_colors;
     
-    uint8_t blend_amount = (animation_step % 100) * 2.55;
+    float blend_amount = (animation_step % 100) / 100.0;
     
-    CHSV color1 = CHSV(colors[color_index], 180, 200);
-    CHSV color2 = CHSV(colors[next_index], 180, 200);
-    
-    CRGB rgb1 = color1;
-    CRGB rgb2 = color2;
-    CRGB blended = blend(rgb1, rgb2, blend_amount);
-    
-    fill_solid(leds, NUM_LEDS, blended);
+    uint32_t color1 = color_hsv(colors[color_index], 180, 200);
+    uint32_t color2 = color_hsv(colors[next_index], 180, 200);
+
+    uint8_t r1 = (color1 >> 16) & 0xFF, g1 = (color1 >> 8) & 0xFF, b1 = color1 & 0xFF;
+    uint8_t r2 = (color2 >> 16) & 0xFF, g2 = (color2 >> 8) & 0xFF, b2 = color2 & 0xFF;
+
+    uint8_t r = r1 + (r2 - r1) * blend_amount;
+    uint8_t g = g1 + (g2 - g1) * blend_amount;
+    uint8_t b = b1 + (b2 - b1) * blend_amount;
+
+    strip.fill(strip.Color(r,g,b));
     
     animation_step++;
 }
 
 // Heart-specific helper functions
 int LedController::get_heart_distance_from_top(int led_index) {
-    // Heart layout: LEDs 1&21 at top, LED 11 at bottom
-    // Distance from top (0-based indexing)
-    if (led_index == 0 || led_index == 20) {  // LEDs 1&21 (0-based: 0&20)
-        return 0;  // Top of heart
-    } else if (led_index == 10) {  // LED 11 (0-based: 10)
-        return 10;  // Bottom of heart
-    } else if (led_index < 10) {  // Left side: LEDs 2-10 (0-based: 1-9)
-        return led_index;
-    } else {  // Right side: LEDs 12-20 (0-based: 11-19)
-        return 20 - led_index;
-    }
+    if (led_index == 0 || led_index == 20) { return 0; }
+    if (led_index == 10) { return 10; }
+    if (led_index < 10) { return led_index; }
+    return 20 - led_index;
 }
 
-void LedController::set_heart_symmetric_leds(int distance, CRGB color) {
-    // Set LEDs at symmetric positions from top
+void LedController::set_heart_symmetric_leds(int distance, uint32_t color) {
     if (distance == 0) {
-        // Top of heart: LEDs 1&21
-        leds[0] = color;   // LED 1
-        leds[20] = color;  // LED 21
+        strip.setPixelColor(0, color);
+        strip.setPixelColor(20, color);
     } else if (distance <= 10) {
-        // Symmetric pairs down the heart
-        int left_led = distance;      // Left side
-        int right_led = 20 - distance; // Right side
-        if (left_led < NUM_LEDS) leds[left_led] = color;
-        if (right_led >= 0 && right_led < NUM_LEDS) leds[right_led] = color;
+        int left_led = distance;
+        int right_led = 20 - distance;
+        if (left_led < NUM_LEDS) strip.setPixelColor(left_led, color);
+        if (right_led >= 0 && right_led < NUM_LEDS) strip.setPixelColor(right_led, color);
     }
 }
 
-void LedController::fill_heart_from_top(int max_distance, CRGB color) {
-    // Fill heart from top down to max_distance
+void LedController::fill_heart_from_top(int max_distance, uint32_t color) {
     for (int dist = 0; dist <= max_distance && dist <= 10; dist++) {
         set_heart_symmetric_leds(dist, color);
     }

@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include <FastLED.h>
+#include <Adafruit_NeoPixel.h>
 #include "config.h"
 
 // LED animation types
@@ -32,6 +32,7 @@ enum LedAnimation {
 // LED controller class
 class LedController {
 public:
+    LedController();
     void init();
     void update();
     
@@ -41,19 +42,22 @@ public:
     const char* get_animation_name() const;
     
     // Direct control
-    void set_all(CRGB color);
+    void set_all(uint32_t color);
     void clear();
     void set_brightness(uint8_t brightness);
-    
+
 private:
-    CRGB leds[NUM_LEDS];
+    Adafruit_NeoPixel strip;
     LedAnimation current_animation = ANIM_OFF;
     unsigned long last_update = 0;
     uint8_t animation_step = 0;
-    
+
+    // Helper for color conversion
+    uint32_t color_hsv(long hue, uint8_t sat, uint8_t val);
+
     // Animation implementations
     void anim_off();
-    void anim_solid(CRGB color);
+    void anim_solid(uint32_t color);
     void anim_rainbow();
     void anim_breathing();
     void anim_sparkle();
@@ -74,8 +78,8 @@ private:
     
     // Heart-specific helper functions
     int get_heart_distance_from_top(int led_index);
-    void set_heart_symmetric_leds(int distance, CRGB color);
-    void fill_heart_from_top(int max_distance, CRGB color);
+    void set_heart_symmetric_leds(int distance, uint32_t color);
+    void fill_heart_from_top(int max_distance, uint32_t color);
 };
 
 // Global LED controller instance
