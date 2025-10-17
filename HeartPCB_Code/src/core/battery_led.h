@@ -9,6 +9,8 @@ public:
     void init();
     void update_battery_color(int battery_percentage);
     void set_charging_animation(int battery_percentage);
+    void set_love_animation();
+    void set_morse_code_animation();
     void turn_off();
     
 private:

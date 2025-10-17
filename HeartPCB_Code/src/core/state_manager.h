@@ -9,7 +9,6 @@ enum AppState {
     STATE_PROPOSE_WAITING,
     STATE_PROPOSE_DISPLAYING,
     STATE_OSCILLOSCOPE,
-    STATE_OTA_UPDATE,
     STATE_ANIMATIONS,
     STATE_BATTERY
 };
@@ -35,7 +34,6 @@ public:
     bool is_propose_waiting() const { return current_state == STATE_PROPOSE_WAITING; }
     bool is_propose_displaying() const { return current_state == STATE_PROPOSE_DISPLAYING; }
     bool is_oscilloscope() const { return current_state == STATE_OSCILLOSCOPE; }
-    bool is_ota_update() const { return current_state == STATE_OTA_UPDATE; }
     bool is_animations() const { return current_state == STATE_ANIMATIONS; }
     bool is_battery() const { return current_state == STATE_BATTERY; }
     

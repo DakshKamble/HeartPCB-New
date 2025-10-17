@@ -61,6 +61,116 @@ void BatteryLED::set_charging_animation(int battery_percentage) {
     charging_step++;
 }
 
+void BatteryLED::set_love_animation() {
+    if (!is_initialized) return;
+    
+    unsigned long now = millis();
+    if (now - last_charging_update < 80) { // Update every 80ms for gentle pulse
+        return;
+    }
+    last_charging_update = now;
+    
+    // Gentle pink pulsing animation for love
+    float pulse = (sin(charging_step * 0.12) + 1.0) / 2.0; // 0.0 to 1.0
+    uint8_t brightness = (uint8_t)(pulse * 200 + 55); // Range from 55 to 255 for gentle pulse
+    
+    // Pink color (hue around 330 degrees)
+    builtin_led.setPixelColor(0, builtin_led.Color(brightness, brightness/4, brightness/2)); // Pink RGB ratio
+    builtin_led.show();
+    
+    charging_step++;
+}
+
+void BatteryLED::set_morse_code_animation() {
+    if (!is_initialized) return;
+    
+    unsigned long now = millis();
+    
+    // Fast Morse code timing (in milliseconds)
+    const int DOT_DURATION = 80;      // Short flash
+    const int DASH_DURATION = 240;    // Long flash (3x dot)
+    const int SYMBOL_GAP = 80;        // Gap between dots/dashes
+    const int LETTER_GAP = 240;       // Gap between letters (3x dot)
+    const int WORD_GAP = 560;         // Gap between words (7x dot)
+    
+    // "I LOVE YOU GARGI" in Morse code
+    // I: ..    L: .-..    O: ---    V: ...-    E: .
+    // Y: -.--    O: ---    U: ..-
+    // G: --.    A: .-    R: .-.    G: --.    I: ..
+    static const char* morse_message = ".. .-.. --- ...- . -.-- --- ..- --. .- .-. --. ..";
+    static int message_pos = 0;
+    static unsigned long last_update = 0;
+    static bool led_on = false;
+    static unsigned long current_duration = 0;
+    
+    // Initialize timing on first call or reset
+    if (last_update == 0) {
+        last_update = now;
+        message_pos = 0;
+        led_on = false;
+    }
+    
+    // Check if current timing period is complete
+    if (now - last_update >= current_duration) {
+        last_update = now;
+        
+        if (led_on) {
+            // Turn off LED and set gap duration
+            builtin_led.clear();
+            builtin_led.show();
+            led_on = false;
+            
+            // Move to next character
+            message_pos++;
+            
+            // Determine gap duration
+            if (message_pos >= strlen(morse_message)) {
+                // End of message - restart with word gap
+                message_pos = 0;
+                current_duration = WORD_GAP;
+            } else {
+                char current_char = morse_message[message_pos];
+                if (current_char == ' ') {
+                    current_duration = LETTER_GAP;
+                    message_pos++; // Skip the space
+                    if (message_pos >= strlen(morse_message)) {
+                        message_pos = 0;
+                        current_duration = WORD_GAP;
+                    }
+                } else {
+                    current_duration = SYMBOL_GAP;
+                }
+            }
+        } else {
+            // Turn on LED with appropriate duration
+            if (message_pos < strlen(morse_message)) {
+                char current_char = morse_message[message_pos];
+                
+                if (current_char == '.') {
+                    // Dot - short pink flash
+                    builtin_led.setPixelColor(0, builtin_led.Color(255, 64, 128)); // Bright pink
+                    current_duration = DOT_DURATION;
+                    led_on = true;
+                } else if (current_char == '-') {
+                    // Dash - long pink flash
+                    builtin_led.setPixelColor(0, builtin_led.Color(255, 64, 128)); // Bright pink
+                    current_duration = DASH_DURATION;
+                    led_on = true;
+                } else if (current_char == ' ') {
+                    // Space - skip and set letter gap
+                    current_duration = LETTER_GAP;
+                    message_pos++;
+                    if (message_pos >= strlen(morse_message)) {
+                        message_pos = 0;
+                        current_duration = WORD_GAP;
+                    }
+                }
+                builtin_led.show();
+            }
+        }
+    }
+}
+
 void BatteryLED::turn_off() {
     if (!is_initialized) return;
     

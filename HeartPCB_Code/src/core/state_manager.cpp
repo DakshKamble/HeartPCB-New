@@ -1,5 +1,6 @@
 #include "state_manager.h"
 #include "led_controller.h"
+#include "dac_controller.h"
 
 // Global instance
 StateManager g_state;
@@ -17,6 +18,15 @@ void StateManager::update() {
 }
 
 void StateManager::transition_to(AppState new_state) {
+    // Handle DAC output based on state transitions
+    if (new_state == STATE_OSCILLOSCOPE) {
+        // Start heart waveform output when entering oscilloscope mode
+        g_dac.start_heart_output();
+    } else if (current_state == STATE_OSCILLOSCOPE) {
+        // Stop heart waveform output when leaving oscilloscope mode
+        g_dac.stop_heart_output();
+    }
+    
     current_state = new_state;
     state_enter_time = millis();
     invert_display = false;
@@ -61,8 +71,6 @@ void StateManager::handle_button_event(ButtonEvent event) {
                 transition_to(STATE_PROPOSE_DISPLAYING);
             } else if (current_state == STATE_OSCILLOSCOPE) {
                 transition_to(STATE_MENU);
-            } else if (current_state == STATE_OTA_UPDATE) {
-                transition_to(STATE_MENU);
             } else if (current_state == STATE_ANIMATIONS) {
                 cycle_animation_selection();
             } else if (current_state == STATE_BATTERY) {
@@ -79,10 +87,8 @@ void StateManager::handle_button_event(ButtonEvent event) {
                 } else if (menu_selection == 1) {
                     transition_to(STATE_OSCILLOSCOPE);
                 } else if (menu_selection == 2) {
-                    transition_to(STATE_OTA_UPDATE);
-                } else if (menu_selection == 3) {
                     transition_to(STATE_ANIMATIONS);
-                } else if (menu_selection == 4) {
+                } else if (menu_selection == 3) {
                     transition_to(STATE_BATTERY);
                 }
             } else if (current_state == STATE_ANIMATIONS) {

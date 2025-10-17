@@ -24,7 +24,6 @@ private:
     void draw_propose_waiting();
     void draw_propose_displaying();
     void draw_oscilloscope();
-    void draw_ota_update();
     void draw_animations();
     void draw_battery();
 };

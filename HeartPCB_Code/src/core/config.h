@@ -18,6 +18,10 @@
 #define NUM_LEDS 21
 #define LED_BRIGHTNESS 64
 
+// DAC Configuration (MCP4922)
+#define DAC_CS_PIN D7
+#define DAC_UPDATE_INTERVAL_US 20  // 20 microseconds for smooth heart drawing
+
 // Timing Configuration
 #define SPLASH_DURATION_MS 2000
 #define PROPOSE_DISPLAY_DURATION_MS 10000
@@ -32,10 +36,9 @@
 #define SPLASH_TEXT_Y 25
 
 // Menu Configuration
-#define MENU_ITEM_COUNT 5
+#define MENU_ITEM_COUNT 4
 #define MENU_ITEM_PROPOSE "Propose"
 #define MENU_ITEM_OSCILLOSCOPE "Oscilloscope"
-#define MENU_ITEM_OTA "OTA Update"
 #define MENU_ITEM_ANIMATIONS "Animations"
 #define MENU_ITEM_BATTERY "Battery"
 
@@ -44,12 +47,8 @@
 #define PROPOSE_LOVE_TEXT "I LOVE YOU"
 
 // Oscilloscope Screen Configuration
-#define OSCILLOSCOPE_TITLE "Entered Oscilloscope"
-#define OSCILLOSCOPE_EXIT_TEXT "Press to exit"
+#define OSCILLOSCOPE_TITLE "Probe me !"
 
-// OTA Update Screen Configuration
-#define OTA_TITLE "OTA Update Mode"
-#define OTA_EXIT_TEXT "Press to exit"
 
 // Animations Screen Configuration
 #define ANIMATIONS_TITLE "Animations Mode"

@@ -93,9 +93,6 @@ void ScreenRenderer::render() {
         case STATE_OSCILLOSCOPE:
             draw_oscilloscope();
             break;
-        case STATE_OTA_UPDATE:
-            draw_ota_update();
-            break;
         case STATE_ANIMATIONS:
             draw_animations();
             break;
@@ -133,16 +130,11 @@ void ScreenRenderer::draw_menu() {
         u8g2->setFont(u8g2_font_t0_12_tr);
         u8g2->drawStr(31, 19, MENU_ITEM_OSCILLOSCOPE);
     } else if (selection == 2) {
-        // OTA Update menu item
-        u8g2->drawXBM(8, 8, 17, 16, DownloadIcon);
-        u8g2->setFont(u8g2_font_t0_12_tr);
-        u8g2->drawStr(38, 19, MENU_ITEM_OTA);
-    } else if (selection == 3) {
         // Animations menu item
         u8g2->drawXBM(10, 8, 15, 16, DisplayBrightnessIcon);
         u8g2->setFont(u8g2_font_t0_12_tr);
         u8g2->drawStr(38, 19, MENU_ITEM_ANIMATIONS);
-    } else if (selection == 4) {
+    } else if (selection == 3) {
         // Battery menu item
         u8g2->drawXBM(8, 9, 24, 16, BatteryChargingIcon);
         u8g2->setFont(u8g2_font_t0_12_tr);
@@ -182,19 +174,15 @@ void ScreenRenderer::draw_propose_displaying() {
 void ScreenRenderer::draw_oscilloscope() {
     begin_frame(g_state.should_invert_display());
     
-    u8g2->setFont(u8g2_font_t0_12_tr);
-    u8g2->drawStr(10, 15, OSCILLOSCOPE_TITLE);
-    u8g2->drawStr(15, 28, OSCILLOSCOPE_EXIT_TEXT);
+    // Use large bold font for "Probe me !"
+    u8g2->setFont(u8g2_font_t0_17b_tr);  // Bold 17px font
     
-    end_frame();
-}
-
-void ScreenRenderer::draw_ota_update() {
-    begin_frame(g_state.should_invert_display());
+    // Center the text horizontally and vertically
+    int text_width = u8g2->getStrWidth(OSCILLOSCOPE_TITLE);
+    int text_x = (DISPLAY_WIDTH - text_width) / 2;
+    int text_y = (DISPLAY_HEIGHT + 17) / 2;  // Center vertically (font height ~17px)
     
-    u8g2->setFont(u8g2_font_t0_12_tr);
-    u8g2->drawStr(15, 15, OTA_TITLE);
-    u8g2->drawStr(15, 28, OTA_EXIT_TEXT);
+    u8g2->drawStr(text_x, text_y, OSCILLOSCOPE_TITLE);
     
     end_frame();
 }
