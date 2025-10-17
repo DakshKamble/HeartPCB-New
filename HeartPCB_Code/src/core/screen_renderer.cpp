@@ -190,12 +190,37 @@ void ScreenRenderer::draw_oscilloscope() {
 void ScreenRenderer::draw_animations() {
     begin_frame(g_state.should_invert_display());
     
-    // Show current animation name
-    u8g2->setFont(u8g2_font_t0_12_tr);
-    const char* anim_name = g_leds.get_animation_name();
-    u8g2->drawStr(5, 12, "Animation:");
-    u8g2->setFont(u8g2_font_t0_15_tr);
-    u8g2->drawStr(5, 28, anim_name);
+    if (g_leds.is_brightness_control_active()) {
+        // Show brightness control mode
+        u8g2->setFont(u8g2_font_t0_12_tr);
+        u8g2->drawStr(5, 12, "Brightness Control");
+        
+        // Show current brightness percentage
+        uint8_t brightness = g_leds.get_brightness();
+        int brightness_percent = (brightness * 100) / 255;
+        
+        char brightness_str[16];
+        snprintf(brightness_str, sizeof(brightness_str), "%d%%", brightness_percent);
+        
+        u8g2->setFont(u8g2_font_t0_17b_tr);  // Large bold font
+        int text_width = u8g2->getStrWidth(brightness_str);
+        int text_x = (DISPLAY_WIDTH - text_width) / 2;
+        u8g2->drawStr(text_x, 28, brightness_str);
+        
+        // Draw brightness bar
+        int bar_width = (brightness * 100) / 255;  // 0-100 pixels
+        u8g2->drawFrame(14, 2, 102, 6);  // Outer frame
+        if (bar_width > 0) {
+            u8g2->drawBox(15, 3, bar_width, 4);  // Fill bar
+        }
+    } else {
+        // Show current animation name
+        u8g2->setFont(u8g2_font_t0_12_tr);
+        const char* anim_name = g_leds.get_animation_name();
+        u8g2->drawStr(5, 12, "Animation:");
+        u8g2->setFont(u8g2_font_t0_15_tr);
+        u8g2->drawStr(5, 28, anim_name);
+    }
     
     end_frame();
 }

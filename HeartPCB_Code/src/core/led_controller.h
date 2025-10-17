@@ -45,12 +45,28 @@ public:
     void set_all(uint32_t color);
     void clear();
     void set_brightness(uint8_t brightness);
+    
+    // Brightness control
+    uint8_t get_brightness() const;
+    void start_brightness_control();
+    void update_brightness_control();
+    void stop_brightness_control();
+    bool is_brightness_control_active() const { return brightness_control_active; }
 
 private:
     Adafruit_NeoPixel strip;
     LedAnimation current_animation = ANIM_OFF;
     unsigned long last_update = 0;
     uint8_t animation_step = 0;
+    
+    // Brightness control variables
+    bool brightness_control_active = false;
+    uint8_t original_brightness = LED_BRIGHTNESS;
+    uint8_t current_brightness = LED_BRIGHTNESS;
+    unsigned long brightness_last_update = 0;
+    bool brightness_increasing = false;
+    static const uint8_t MIN_BRIGHTNESS = 25;  // 10% of 255
+    static const uint8_t MAX_BRIGHTNESS = 255; // 100%
 
     // Helper for color conversion
     uint32_t color_hsv(long hue, uint8_t sat, uint8_t val);

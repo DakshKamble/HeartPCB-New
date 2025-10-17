@@ -93,13 +93,24 @@ void StateManager::handle_button_event(ButtonEvent event) {
                 }
             } else if (current_state == STATE_ANIMATIONS) {
                 // Long press in animations exits to menu (keep animation running)
-                transition_to(STATE_MENU);
+                // But only if brightness control is not active
+                if (!g_leds.is_brightness_control_active()) {
+                    transition_to(STATE_MENU);
+                } else {
+                    // Stop brightness control
+                    g_leds.stop_brightness_control();
+                }
             }
             break;
             
         case BTN_LONG_PRESS_ACTIVE:
             // Visual feedback while holding
             invert_display = true;
+            
+            // Start brightness control in animations mode
+            if (current_state == STATE_ANIMATIONS && !g_leds.is_brightness_control_active()) {
+                g_leds.start_brightness_control();
+            }
             break;
             
         case BTN_NONE:

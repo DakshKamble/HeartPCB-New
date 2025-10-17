@@ -39,6 +39,9 @@ void LedController::init() {
 void LedController::update() {
     unsigned long now = millis();
     
+    // Always update brightness control if active (higher priority)
+    update_brightness_control();
+    
     if (now - last_update < 16) { // ~60 FPS
         return;
     }
@@ -97,8 +100,73 @@ void LedController::clear() {
 }
 
 void LedController::set_brightness(uint8_t brightness) {
+    current_brightness = brightness;
     strip.setBrightness(brightness);
     strip.show();
+}
+
+uint8_t LedController::get_brightness() const {
+    return current_brightness;
+}
+
+void LedController::start_brightness_control() {
+    brightness_control_active = true;
+    original_brightness = current_brightness;
+    brightness_last_update = millis();
+    
+    // Determine initial direction based on current brightness
+    if (current_brightness <= MIN_BRIGHTNESS) {
+        brightness_increasing = true;
+    } else if (current_brightness >= MAX_BRIGHTNESS) {
+        brightness_increasing = false;
+    } else {
+        // Start by going to minimum first
+        brightness_increasing = false;
+    }
+    
+    Serial.print("Brightness control started. Current: ");
+    Serial.print(current_brightness);
+    Serial.println("%");
+}
+
+void LedController::update_brightness_control() {
+    if (!brightness_control_active) return;
+    
+    unsigned long now = millis();
+    
+    // Update every 20ms for smooth brightness transition
+    if (now - brightness_last_update >= 20) {
+        brightness_last_update = now;
+        
+        // Smooth brightness change - 2 steps per update for nice speed
+        if (brightness_increasing) {
+            if (current_brightness < MAX_BRIGHTNESS - 2) {
+                current_brightness += 2;
+            } else {
+                current_brightness = MAX_BRIGHTNESS;
+                brightness_increasing = false; // Start decreasing
+            }
+        } else {
+            if (current_brightness > MIN_BRIGHTNESS + 2) {
+                current_brightness -= 2;
+            } else {
+                current_brightness = MIN_BRIGHTNESS;
+                brightness_increasing = true; // Start increasing
+            }
+        }
+        
+        // Apply the new brightness
+        strip.setBrightness(current_brightness);
+        strip.show();
+    }
+}
+
+void LedController::stop_brightness_control() {
+    brightness_control_active = false;
+    
+    Serial.print("Brightness control stopped. Final brightness: ");
+    Serial.print((current_brightness * 100) / 255);
+    Serial.println("%");
 }
 
 // HSV to RGB conversion
