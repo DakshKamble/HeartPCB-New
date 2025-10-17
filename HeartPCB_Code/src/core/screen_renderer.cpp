@@ -191,10 +191,6 @@ void ScreenRenderer::draw_animations() {
     begin_frame(g_state.should_invert_display());
     
     if (g_leds.is_brightness_control_active()) {
-        // Show brightness control mode
-        u8g2->setFont(u8g2_font_t0_12_tr);
-        u8g2->drawStr(5, 12, "Brightness Control");
-        
         // Show current brightness percentage
         uint8_t brightness = g_leds.get_brightness();
         int brightness_percent = (brightness * 100) / 255;
@@ -205,9 +201,9 @@ void ScreenRenderer::draw_animations() {
         u8g2->setFont(u8g2_font_t0_17b_tr);  // Large bold font
         int text_width = u8g2->getStrWidth(brightness_str);
         int text_x = (DISPLAY_WIDTH - text_width) / 2;
-        u8g2->drawStr(text_x, 28, brightness_str);
+        u8g2->drawStr(text_x, 22, brightness_str);  // Moved down slightly
         
-        // Draw brightness bar
+        // Draw brightness bar at top
         int bar_width = (brightness * 100) / 255;  // 0-100 pixels
         u8g2->drawFrame(14, 2, 102, 6);  // Outer frame
         if (bar_width > 0) {
