@@ -7304,16 +7304,6 @@
 		)
 		(uuid "ff70bc1a-dba0-4f3d-bc3c-58da175ced70")
 	)
-	(label "V_BAT"
-		(at 316.23 39.37 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "03a72507-29ec-4d09-92a2-8b05eacf8d70")
-	)
 	(label "LED_Din"
 		(at 288.29 62.23 0)
 		(effects
@@ -7325,6 +7315,16 @@
 		(uuid "1466c0e4-de4f-4561-ba94-9e71355336a7")
 	)
 	(label "V_BAT"
+		(at 342.9 50.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "368670a6-be5e-4b4e-8b44-47e4f6f50399")
+	)
+	(label "V_BAT"
 		(at 279.4 73.66 0)
 		(effects
 			(font
@@ -7332,19 +7332,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "167e3d1a-5e59-4d78-87d3-bd353a8b212b")
-	)
-	(label "V_BAT"
-		(at 38.1 162.56 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "413a0949-2338-481e-be28-cf5f79714225")
+		(uuid "379a560e-fce0-48de-b675-5b108e4098ea")
 	)
 	(label "V_BAT"
 		(at 110.49 50.8 0)
@@ -7356,6 +7344,17 @@
 		)
 		(uuid "49e63cae-60df-4746-9348-2bbeb55afd63")
 	)
+	(label "V_BAT"
+		(at 38.1 162.56 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+			)
+			(justify left bottom)
+		)
+		(uuid "4a60ea7c-6367-4adf-8bbe-1fe62e93a526")
+	)
 	(label "CHRG"
 		(at 288.29 58.42 0)
 		(effects
@@ -7365,6 +7364,16 @@
 			(justify left bottom)
 		)
 		(uuid "7dbff2c4-fe5a-4e76-8717-e70626843a2e")
+	)
+	(label "V_BAT"
+		(at 316.23 39.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b5791b28-9878-413a-b1c7-8b77dab27c91")
 	)
 	(label "LED_Din"
 		(at 31.75 173.99 0)
@@ -7377,16 +7386,6 @@
 			(justify left bottom)
 		)
 		(uuid "d45a6c04-ae3f-4e71-b177-96c6aa174e21")
-	)
-	(label "V_BAT"
-		(at 342.9 50.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "ec1ad4d9-ecce-4168-b823-3e67c0990745")
 	)
 	(label "CHRG"
 		(at 82.55 55.88 0)

@@ -239,12 +239,7 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [
-      [
-        "power_pin_not_driven|1651000|647700|7af6ce6f-88c6-4c3f-93a9-113aa0512124|00000000-0000-0000-0000-000000000000|/0a1f8a90-c8a7-483f-9d31-edf62be98b79|/0a1f8a90-c8a7-483f-9d31-edf62be98b79|",
-        ""
-      ]
-    ],
+    "erc_exclusions": [],
     "meta": {
       "version": 0
     },
@@ -615,6 +610,14 @@
       "version": 1
     },
     "net_format_name": "",
+    "ngspice": {
+      "fix_include_paths": true,
+      "meta": {
+        "version": 0
+      },
+      "model_mode": 4,
+      "workbook_filename": ""
+    },
     "page_layout_descr_file": "",
     "plot_directory": "",
     "space_save_all_events": true,
