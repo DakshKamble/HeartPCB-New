@@ -8,19 +8,19 @@
     "high_contrast_mode": 0,
     "net_color_mode": 1,
     "opacity": {
-      "images": 0.7400000095367432,
+      "images": 0.6,
       "pads": 1.0,
       "shapes": 1.0,
       "tracks": 1.0,
       "vias": 1.0,
-      "zones": 0.5299999713897705
+      "zones": 0.6
     },
     "selection_filter": {
       "dimensions": true,
       "footprints": true,
       "graphics": true,
       "keepouts": true,
-      "lockedItems": true,
+      "lockedItems": false,
       "otherItems": true,
       "pads": true,
       "text": true,
@@ -39,15 +39,18 @@
       "footprint_values",
       "footprint_references",
       "tracks",
+      "drc_errors",
       "drawing_sheet",
       "bitmaps",
       "pads",
       "zones",
+      "drc_warnings",
       "drc_exclusions",
+      "locked_item_shadows",
       "conflict_shadows",
       "shapes"
     ],
-    "visible_layers": "00000000_00000000_55555555_57555555",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffffff",
     "zone_display_mode": 0
   },
   "git": {
@@ -56,7 +59,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "HeartPCB_KiCad.kicad_prl",
+    "filename": "testB80.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {
@@ -94,7 +97,7 @@
       91,
       71,
       91,
-      705
+      91
     ],
     "custom_group_rules": [],
     "expanded_rows": [],
